@@ -68,13 +68,49 @@ class Board:
 	def isGameOver(self):
 		return self.checkDiagonals() or self.checkVerticals() or self.checkHorizontals() or self.allPositionsOccupied()
 
+	def placeToken(self, column):
+		if column < 0 or column >= 7:
+			return False
+		elif self.columnStatus[column] < 0:
+			return False
+		else:
+			pos = self.columnStatus[column]
+			if self.turn == 0:
+				self.board[pos][column] = 'O'
+			else:
+				self.board[pos][column] = 'X'
+			self.columnStatus[column] -= 1
+			return True
+
 	def play(self):
-		pass
+		print("Welcome to the game of Connect4! The first player to connect four of his or her own tokens in a horizontal, vertical, or diagonal line wins!")
+		while self.isGameOver() == False:
+			self.printBoard()
+			if self.turn == 0:
+				print("Player 1, it's your turn.")
+			else:
+				print("Player 2, it's your turn.")
+			column = int(input("Please select a column to drop your token into: "))
+			if self.placeToken(column) == True:
+				self.turn += 1
+				self.turn %= 2
+			else:
+				print("Invalid choice! Please try again.")
+		
+		self.printBoard()
+		if self.status == GameStatus.DRAW:
+			print("Draw")
+		elif self.status == GameStatus.OWINS:
+			print("Player 1 wins")
+		else:
+			print("Player 2 wins")
 
 
 
 def main():
 	gameBoard = Board()
+	gameBoard.play()
+
 	return 0
 
 if __name__ == '__main__': main()
